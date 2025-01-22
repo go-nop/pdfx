@@ -46,10 +46,11 @@ func TestRemoveWatermarks(t *testing.T) {
 
 			ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
-			pdfProcessor := New(ctx, tt.inputFile, tt.outputFile)
+			pdfProcessor, err := New(ctx, tt.inputFile, tt.outputFile)
+			assert.NoError(t, err)
 
 			// Call RemoveWatermarks and check the result
-			err := pdfProcessor.RemoveWatermarks()
+			err = pdfProcessor.RemoveWatermarks()
 			if tt.expectedError == "" {
 				assert.NoError(t, err)
 			} else {

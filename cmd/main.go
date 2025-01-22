@@ -19,10 +19,13 @@ func main() {
 	ctx := context.Background()
 
 	// Create a new PDFProcessor
-	processor := pdfx.New(ctx, inputPath, outputPath)
-	processor.Debug()
+	processor, err := pdfx.New(ctx, inputPath, outputPath)
+	if err != nil {
+		log.Fatalf("Failed to create PDFProcessor: %v", err)
+	}
+
 	// Remove watermarks
-	err := processor.RemoveWatermarks()
+	err = processor.RemoveWatermarks()
 	if err != nil {
 		log.Printf("Failed to remove watermarks: %v", err)
 	}
@@ -32,9 +35,6 @@ func main() {
 	if err != nil {
 		log.Printf("Failed to remove signatures: %v", err)
 	}
-
-	// get images
-	// processor.Images()
 
 	processor.Debug()
 

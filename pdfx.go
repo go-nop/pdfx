@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"log"
 	"os"
 	"sync"
 
@@ -43,11 +42,11 @@ func defaultConfiguration() *model.Configuration {
 }
 
 // New creates a new PDFProcessor
-func New(ctx context.Context, inputPath, outputPath string, opts ...Option) *PDFProcessor {
+func New(ctx context.Context, inputPath, outputPath string, opts ...Option) (*PDFProcessor, error) {
 	// Create a new PDFProcessor
 	rs, err := os.Open(inputPath)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 	defer rs.Close()
 
@@ -56,12 +55,12 @@ func New(ctx context.Context, inputPath, outputPath string, opts ...Option) *PDF
 	// read context from the input file
 	pdfCtx, err := pdfcpu.ReadWithContext(ctx, rs, conf)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	err = pdfcpu.OptimizeXRefTable(pdfCtx)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	p := &PDFProcessor{
@@ -78,16 +77,10 @@ func New(ctx context.Context, inputPath, outputPath string, opts ...Option) *PDF
 		opt(p)
 	}
 
-	return p
+	return p, nil
 }
 
 func (p *PDFProcessor) WriteFile() error {
-	f, err := os.Create(p.outputFilePath)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-
 	return api.WriteContextFile(p.pdfContext, p.outputFilePath)
 }
 
@@ -97,20 +90,4 @@ func (p *PDFProcessor) Debug() {
 
 func (p *PDFProcessor) Optimize() error {
 	return api.OptimizeContext(p.pdfContext)
-}
-
-func (p *PDFProcessor) Images() {
-	pages, err := api.PagesForPageSelection(p.pdfContext.PageCount, nil, true, true)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	images, _, err := pdfcpu.Images(p.pdfContext, pages)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	for _, img := range images {
-		log.Println(img)
-	}
 }

@@ -28,12 +28,12 @@ func (p *PDFProcessor) removeWatermarks() error {
 		lastPage := fmt.Sprintf("%d", p.pdfContext.PageCount)
 		pages, err := api.PagesForPageSelection(p.pdfContext.PageCount, []string{lastPage}, true, true)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 
 		images, _, err := pdfcpu.Images(p.pdfContext, pages)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 
 		for _, img := range images {
