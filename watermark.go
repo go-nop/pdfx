@@ -2,7 +2,6 @@ package pdfx
 
 import (
 	"bytes"
-	"errors"
 	"fmt"
 	"image"
 	"image/color"
@@ -13,15 +12,10 @@ import (
 	"github.com/pdfcpu/pdfcpu/pkg/pdfcpu"
 )
 
-// RemoveWatermarks is a function to remove watermarks from a PDF file
-func (p *PDFProcessor) RemoveWatermarks() error {
-	return p.removeWatermarks()
-}
-
 // removeWatermarks is a function to remove watermarks from a PDF file
 func (p *PDFProcessor) removeWatermarks() error {
 	if err := pdfcpu.DetectWatermarks(p.pdfContext); err != nil {
-		return errors.New("failed to detect watermarks")
+		log.Println("No watermarks found")
 	}
 
 	if !p.pdfContext.Watermarked {

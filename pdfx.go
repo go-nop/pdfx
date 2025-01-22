@@ -80,14 +80,27 @@ func New(ctx context.Context, inputPath, outputPath string, opts ...Option) (*PD
 	return p, nil
 }
 
+// WriteFile is a function to write the PDFProcessor's PDFContext to a file
 func (p *PDFProcessor) WriteFile() error {
 	return api.WriteContextFile(p.pdfContext, p.outputFilePath)
 }
 
+// Debug is a function to print the PDFProcessor's PDFContext
 func (p *PDFProcessor) Debug() {
 	fmt.Print(p.pdfContext.String())
 }
 
+// Optimize is a function to optimize a PDF file
 func (p *PDFProcessor) Optimize() error {
 	return api.OptimizeContext(p.pdfContext)
+}
+
+// RemoveSignatures is a function to remove signatures from a PDF file
+func (p *PDFProcessor) RemoveSignatures() error {
+	return p.removeSignatures()
+}
+
+// RemoveWatermarks is a function to remove watermarks from a PDF file
+func (p *PDFProcessor) RemoveWatermarks() error {
+	return p.removeWatermarks()
 }

@@ -9,9 +9,7 @@ import (
 	"github.com/pdfcpu/pdfcpu/pkg/pdfcpu/types"
 )
 
-func (p *PDFProcessor) RemoveSignatures() error {
-	return p.removeSignatures()
-}
+
 
 func (p *PDFProcessor) removeSignatures() error {
 	rootDict, err := p.pdfContext.Catalog()
