@@ -43,6 +43,18 @@ func defaultConfiguration() *model.Configuration {
 
 // New creates a new PDFProcessor
 func New(ctx context.Context, inputPath, outputPath string, opts ...Option) (*PDFProcessor, error) {
+	conf := defaultConfiguration()
+	p := &PDFProcessor{
+		ctx:            ctx,
+		inputFilePath:  inputPath,
+		outputFilePath: outputPath,
+		configuration:  conf,
+	}
+
+	// Apply options
+	for _, opt := range opts {
+		opt(p)
+	}
 	// Create a new PDFProcessor
 	rs, err := os.Open(inputPath)
 	if err != nil {
@@ -50,7 +62,7 @@ func New(ctx context.Context, inputPath, outputPath string, opts ...Option) (*PD
 	}
 	defer rs.Close()
 
-	conf := defaultConfiguration()
+	p.rs = rs
 
 	// read context from the input file
 	pdfCtx, err := pdfcpu.ReadWithContext(ctx, rs, conf)
@@ -58,23 +70,11 @@ func New(ctx context.Context, inputPath, outputPath string, opts ...Option) (*PD
 		return nil, err
 	}
 
+	p.pdfContext = pdfCtx
+
 	err = pdfcpu.OptimizeXRefTable(pdfCtx)
 	if err != nil {
 		return nil, err
-	}
-
-	p := &PDFProcessor{
-		ctx:            ctx,
-		rs:             rs,
-		inputFilePath:  inputPath,
-		outputFilePath: outputPath,
-		configuration:  conf,
-		pdfContext:     pdfCtx,
-	}
-
-	// Apply options
-	for _, opt := range opts {
-		opt(p)
 	}
 
 	return p, nil
