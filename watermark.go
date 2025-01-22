@@ -8,7 +8,6 @@ import (
 	"image/color"
 	"image/png"
 	"log"
-	"os"
 
 	"github.com/pdfcpu/pdfcpu/pkg/api"
 	"github.com/pdfcpu/pdfcpu/pkg/pdfcpu"
@@ -80,12 +79,6 @@ func (p *PDFProcessor) removeWatermarks() error {
 	if err = pdfcpu.RemoveWatermarks(p.pdfContext, pages); err != nil {
 		return err
 	}
-
-	pdfTempFile, err := os.CreateTemp("/tmp", "document-remove-watermark-*.pdf")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer os.Remove(pdfTempFile.Name())
 
 	err = p.Optimize()
 	if err != nil {

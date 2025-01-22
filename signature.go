@@ -6,8 +6,6 @@ import (
 	"strings"
 	"unicode"
 
-	"log"
-
 	"github.com/pdfcpu/pdfcpu/pkg/pdfcpu/types"
 )
 
@@ -51,12 +49,9 @@ func (p *PDFProcessor) removeSignatures() error {
 			return errors.New("can't dereference field dictionary")
 		}
 
-		log.Printf("Field %s has a \n", fieldDict)
-
 		// check if field has a signature
 		if _, found := fieldDict.Find("V"); found {
-			log.Printf("Field %s has a signature\n", fieldDict)
-			log.Println("Deleting signature...")
+
 			err = p.pdfContext.DeleteObject(fieldObj)
 			if err != nil {
 				return errors.New("can't delete field object")
