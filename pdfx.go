@@ -72,7 +72,7 @@ func New(ctx context.Context, inputPath, outputPath string, opts ...Option) (*PD
 
 	p.pdfContext = pdfCtx
 
-	err = pdfcpu.OptimizeXRefTable(pdfCtx)
+	err = pdfcpu.OptimizeXRefTable(p.pdfContext)
 	if err != nil {
 		return nil, err
 	}

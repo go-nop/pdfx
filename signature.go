@@ -2,14 +2,13 @@ package pdfx
 
 import (
 	"errors"
+	"log"
 	"regexp"
 	"strings"
 	"unicode"
 
 	"github.com/pdfcpu/pdfcpu/pkg/pdfcpu/types"
 )
-
-
 
 func (p *PDFProcessor) removeSignatures() error {
 	rootDict, err := p.pdfContext.Catalog()
@@ -42,6 +41,11 @@ func (p *PDFProcessor) removeSignatures() error {
 
 	// each field is a dictionary
 	for _, fieldObj := range fieldsArr {
+		fieldRef, ok := fieldObj.(types.IndirectRef)
+		if !ok {
+			log.Println("field object is not an indirect reference")
+		}
+
 		fieldDict, err := p.pdfContext.DereferenceDict(fieldObj)
 		if err != nil {
 			return errors.New("can't dereference field dictionary")
@@ -55,7 +59,7 @@ func (p *PDFProcessor) removeSignatures() error {
 				return errors.New("can't delete field object")
 			}
 
-			err = p.pdfContext.DeleteObject(fieldObj)
+			err = p.pdfContext.DeleteObject(fieldRef)
 			if err != nil {
 				return errors.New("can't delete field object")
 			}

@@ -32,7 +32,7 @@ func (p *PDFProcessor) removeWatermarks() error {
 
 		for _, img := range images {
 			for _, i := range img {
-				if i.Name == "I1" {
+				if i.Name == "I1" || i.Name == "XO1" || i.Name == "XO2" || i.Name == "XO3" || i.Name == "R72" {
 					log.Println("Watermark found")
 
 					// create image wihite with same dimensions
