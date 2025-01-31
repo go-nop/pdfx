@@ -2,7 +2,6 @@ package pdfx
 
 import (
 	"context"
-	"fmt"
 	"io"
 	"os"
 	"sync"
@@ -86,8 +85,8 @@ func (p *PDFProcessor) WriteFile() error {
 }
 
 // Debug is a function to print the PDFProcessor's PDFContext
-func (p *PDFProcessor) Debug() {
-	fmt.Print(p.pdfContext.String())
+func (p *PDFProcessor) Debug() string {
+	return p.pdfContext.String()
 }
 
 // Optimize is a function to optimize a PDF file
@@ -103,4 +102,9 @@ func (p *PDFProcessor) RemoveSignatures() error {
 // RemoveWatermarks is a function to remove watermarks from a PDF file
 func (p *PDFProcessor) RemoveWatermarks() error {
 	return p.removeWatermarks()
+}
+
+// RemoveQRCode is a function to remove QR codes from a PDF file
+func (p *PDFProcessor) RemoveQRCode() error {
+	return p.removeQRCode()
 }
