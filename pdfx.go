@@ -3,6 +3,7 @@ package pdfx
 import (
 	"context"
 	"io"
+	"log"
 	"os"
 	"sync"
 
@@ -63,24 +64,20 @@ func New(ctx context.Context, inputPath, outputPath string, opts ...Option) (*PD
 
 	p.rs = rs
 
-	// read context from the input file
-	pdfCtx, err := pdfcpu.ReadWithContext(ctx, rs, conf)
-	if err != nil {
-		return nil, err
-	}
+	pdfCtx, err := api.ReadValidateAndOptimize(rs, conf)
 
 	p.pdfContext = pdfCtx
-
-	err = pdfcpu.OptimizeXRefTable(p.pdfContext)
-	if err != nil {
-		return nil, err
-	}
 
 	return p, nil
 }
 
 // WriteFile is a function to write the PDFProcessor's PDFContext to a file
 func (p *PDFProcessor) WriteFile() error {
+	err := pdfcpu.OptimizeXRefTable(p.pdfContext)
+	if err != nil {
+		log.Printf("Failed to optimize PDF: %v", err)
+	}
+
 	return api.WriteContextFile(p.pdfContext, p.outputFilePath)
 }
 
