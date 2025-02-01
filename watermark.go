@@ -27,11 +27,6 @@ func (p *PDFProcessor) removeWatermarks() error {
 		return err
 	}
 
-	err = p.Optimize()
-	if err != nil {
-		return err
-	}
-
 	return nil
 
 }
@@ -213,11 +208,6 @@ func (p *PDFProcessor) removeQRCode() error {
 
 			continue
 		}
-	}
-
-	err = p.Optimize()
-	if err != nil {
-		return err
 	}
 
 	return nil
